@@ -18,48 +18,76 @@ st.markdown(
     }
 
     /* Títulos, subtítulos y encabezados */
-    h1, h2, h3, h4, h5, h6 {
+    h1, h2, h3, h4, h5, h6,
+    [data-testid="stHeading"],
+    [data-testid="stHeading"] h1,
+    [data-testid="stHeading"] h2,
+    [data-testid="stHeading"] h3 {
         color: var(--fucsia) !important;
     }
 
     /* Párrafos, markdown y st.write */
     .stMarkdown, .stMarkdown p, .stMarkdown li, .stMarkdown span,
     [data-testid="stMarkdownContainer"],
-    [data-testid="stMarkdownContainer"] p {
+    [data-testid="stMarkdownContainer"] p,
+    [data-testid="stMarkdownContainer"] li,
+    [data-testid="stMarkdownContainer"] span {
         color: var(--fucsia) !important;
     }
 
     /* Etiquetas de widgets (selectbox, checkbox, uploader, etc.) */
-    label, label p, label span,
+    label, label p, label span, label div,
     [data-testid="stWidgetLabel"],
-    [data-testid="stWidgetLabel"] p {
+    [data-testid="stWidgetLabel"] p,
+    [data-testid="stCheckbox"] label,
+    [data-testid="stCheckbox"] span,
+    [data-testid="stCheckbox"] p {
         color: var(--fucsia) !important;
     }
 
-    /* Texto del selectbox y del uploader */
+    /* Texto del selectbox (valor seleccionado y opciones) */
     [data-baseweb="select"] div,
+    [data-baseweb="select"] span,
+    [data-baseweb="select"] input,
+    [data-baseweb="popover"] li,
+    [data-baseweb="popover"] li div,
+    [data-baseweb="popover"] li span {
+        color: var(--fucsia) !important;
+    }
+
+    /* Uploader */
     [data-testid="stFileUploader"] section,
     [data-testid="stFileUploader"] small,
     [data-testid="stFileUploader"] span,
-    [data-testid="stFileUploader"] p {
+    [data-testid="stFileUploader"] p,
+    [data-testid="stFileUploader"] div {
         color: var(--fucsia) !important;
     }
 
     /* Captions (por ejemplo, "Imagen cargada.") */
     [data-testid="stCaptionContainer"],
     [data-testid="stCaptionContainer"] p,
+    [data-testid="stImageCaption"],
     figcaption {
         color: var(--fucsia) !important;
     }
 
     /* Mensajes de éxito, advertencia, etc. */
+    [data-testid="stAlert"],
     [data-testid="stAlert"] p,
-    [data-testid="stAlert"] div {
+    [data-testid="stAlert"] div,
+    [data-testid="stAlert"] span {
+        color: var(--fucsia) !important;
+    }
+
+    /* Spinner */
+    [data-testid="stSpinner"],
+    [data-testid="stSpinner"] p {
         color: var(--fucsia) !important;
     }
 
     /* Botón */
-    .stButton button, .stButton button p {
+    .stButton button, .stButton button p, .stButton button div {
         color: var(--fucsia) !important;
         border-color: var(--fucsia) !important;
     }
@@ -71,10 +99,10 @@ st.markdown(
 st.title("Lector y Traductor de Textos")
 
 # Imagen debajo del título principal
-if os.path.exists("pensar.jpg"):
-    st.image("pensar.jpg", use_container_width=True)
+if os.path.exists("sisisi.jpg"):
+    st.image("sisisi.jpg", use_container_width=True)
 else:
-    st.warning("No se encontró la imagen pensar.jpg en la carpeta de la app.")
+    st.warning("No se encontró la imagen sisisi.jpg en la carpeta de la app.")
 
 st.subheader("Sube una imagen con texto, indica el idioma en el que está y el idioma al que quieres traducirlo")
 
