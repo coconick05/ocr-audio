@@ -9,7 +9,73 @@ from PIL import Image
 from gtts import gTTS
 from googletrans import Translator
 
+# Estilo: todos los textos en fucsia
+st.markdown(
+    """
+    <style>
+    :root {
+        --fucsia: #FF00FF;
+    }
+
+    /* Títulos, subtítulos y encabezados */
+    h1, h2, h3, h4, h5, h6 {
+        color: var(--fucsia) !important;
+    }
+
+    /* Párrafos, markdown y st.write */
+    .stMarkdown, .stMarkdown p, .stMarkdown li, .stMarkdown span,
+    [data-testid="stMarkdownContainer"],
+    [data-testid="stMarkdownContainer"] p {
+        color: var(--fucsia) !important;
+    }
+
+    /* Etiquetas de widgets (selectbox, checkbox, uploader, etc.) */
+    label, label p, label span,
+    [data-testid="stWidgetLabel"],
+    [data-testid="stWidgetLabel"] p {
+        color: var(--fucsia) !important;
+    }
+
+    /* Texto del selectbox y del uploader */
+    [data-baseweb="select"] div,
+    [data-testid="stFileUploader"] section,
+    [data-testid="stFileUploader"] small,
+    [data-testid="stFileUploader"] span,
+    [data-testid="stFileUploader"] p {
+        color: var(--fucsia) !important;
+    }
+
+    /* Captions (por ejemplo, "Imagen cargada.") */
+    [data-testid="stCaptionContainer"],
+    [data-testid="stCaptionContainer"] p,
+    figcaption {
+        color: var(--fucsia) !important;
+    }
+
+    /* Mensajes de éxito, advertencia, etc. */
+    [data-testid="stAlert"] p,
+    [data-testid="stAlert"] div {
+        color: var(--fucsia) !important;
+    }
+
+    /* Botón */
+    .stButton button, .stButton button p {
+        color: var(--fucsia) !important;
+        border-color: var(--fucsia) !important;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
 st.title("Lector y Traductor de Textos")
+
+# Imagen debajo del título principal
+if os.path.exists("pensar.jpg"):
+    st.image("pensar.jpg", use_container_width=True)
+else:
+    st.warning("No se encontró la imagen pensar.jpg en la carpeta de la app.")
+
 st.subheader("Sube una imagen con texto, indica el idioma en el que está y el idioma al que quieres traducirlo")
 
 translator = Translator()
@@ -111,7 +177,3 @@ if bg_image is not None:
             if display_output_text:
                 st.markdown("## Texto traducido:")
                 st.write(texto_traducido)
-
- 
-    
-    
