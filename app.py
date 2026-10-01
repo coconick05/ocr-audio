@@ -9,109 +9,60 @@ from PIL import Image
 from gtts import gTTS
 from googletrans import Translator
 
-# Estilo: todos los textos en fucsia
-st.markdown(
-    """
-    <style>
-    :root {
-        --fucsia: #FF00FF;
-    }
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-    /* Títulos, subtítulos y encabezados */
-    h1, h2, h3, h4, h5, h6,
-    [data-testid="stHeading"],
-    [data-testid="stHeading"] h1,
-    [data-testid="stHeading"] h2,
-    [data-testid="stHeading"] h3 {
-        color: var(--fucsia) !important;
-    }
+# ---------- Estilo: todos los textos en fucsia ----------
+# IMPORTANTE: el CSS va SIN sangría (indentación). Si las líneas empiezan con
+# 4 espacios, Streamlit lo interpreta como bloque de código y no aplica el estilo.
+CSS = """<style>
+:root { --fucsia: #FF00FF; }
+html, body, .stApp, .stApp * { color: var(--fucsia) !important; }
+h1, h2, h3, h4, h5, h6, [data-testid="stHeading"] * { color: var(--fucsia) !important; }
+[data-testid="stMarkdownContainer"], [data-testid="stMarkdownContainer"] * { color: var(--fucsia) !important; }
+label, label *, [data-testid="stWidgetLabel"], [data-testid="stWidgetLabel"] * { color: var(--fucsia) !important; }
+[data-baseweb="select"] *, [data-baseweb="popover"] * { color: var(--fucsia) !important; }
+[data-testid="stFileUploader"] *, [data-testid="stCaptionContainer"] *, figcaption { color: var(--fucsia) !important; }
+[data-testid="stAlert"], [data-testid="stAlert"] * { color: var(--fucsia) !important; }
+.stButton button, .stButton button * { color: var(--fucsia) !important; border-color: var(--fucsia) !important; }
+</style>"""
 
-    /* Párrafos, markdown y st.write */
-    .stMarkdown, .stMarkdown p, .stMarkdown li, .stMarkdown span,
-    [data-testid="stMarkdownContainer"],
-    [data-testid="stMarkdownContainer"] p,
-    [data-testid="stMarkdownContainer"] li,
-    [data-testid="stMarkdownContainer"] span {
-        color: var(--fucsia) !important;
-    }
-
-    /* Etiquetas de widgets (selectbox, checkbox, uploader, etc.) */
-    label, label p, label span, label div,
-    [data-testid="stWidgetLabel"],
-    [data-testid="stWidgetLabel"] p,
-    [data-testid="stCheckbox"] label,
-    [data-testid="stCheckbox"] span,
-    [data-testid="stCheckbox"] p {
-        color: var(--fucsia) !important;
-    }
-
-    /* Texto del selectbox (valor seleccionado y opciones) */
-    [data-baseweb="select"] div,
-    [data-baseweb="select"] span,
-    [data-baseweb="select"] input,
-    [data-baseweb="popover"] li,
-    [data-baseweb="popover"] li div,
-    [data-baseweb="popover"] li span {
-        color: var(--fucsia) !important;
-    }
-
-    /* Uploader */
-    [data-testid="stFileUploader"] section,
-    [data-testid="stFileUploader"] small,
-    [data-testid="stFileUploader"] span,
-    [data-testid="stFileUploader"] p,
-    [data-testid="stFileUploader"] div {
-        color: var(--fucsia) !important;
-    }
-
-    /* Captions (por ejemplo, "Imagen cargada.") */
-    [data-testid="stCaptionContainer"],
-    [data-testid="stCaptionContainer"] p,
-    [data-testid="stImageCaption"],
-    figcaption {
-        color: var(--fucsia) !important;
-    }
-
-    /* Mensajes de éxito, advertencia, etc. */
-    [data-testid="stAlert"],
-    [data-testid="stAlert"] p,
-    [data-testid="stAlert"] div,
-    [data-testid="stAlert"] span {
-        color: var(--fucsia) !important;
-    }
-
-    /* Spinner */
-    [data-testid="stSpinner"],
-    [data-testid="stSpinner"] p {
-        color: var(--fucsia) !important;
-    }
-
-    /* Botón */
-    .stButton button, .stButton button p, .stButton button div {
-        color: var(--fucsia) !important;
-        border-color: var(--fucsia) !important;
-    }
-    </style>
-    """,
-    unsafe_allow_html=True,
-)
+if hasattr(st, "html"):
+    st.html(CSS)
+else:
+    st.markdown(CSS, unsafe_allow_html=True)
 
 st.title("Lector y Traductor de Textos")
 
+
+def mostrar_imagen(ruta, **kwargs):
+    try:
+        st.image(ruta, use_container_width=True, **kwargs)
+    except TypeError:  # versiones antiguas de Streamlit
+        st.image(ruta, use_column_width=True, **kwargs)
+
+
+def buscar_imagen(nombre_base):
+    """Busca nombre_base.(jpg/jpeg/png) sin importar mayúsculas, en la carpeta del script y en la actual."""
+    for carpeta in (BASE_DIR, os.getcwd()):
+        for archivo in os.listdir(carpeta):
+            nombre, ext = os.path.splitext(archivo)
+            if nombre.lower() == nombre_base.lower() and ext.lower() in (".jpg", ".jpeg", ".png"):
+                return os.path.join(carpeta, archivo)
+    return None
+
+
 # Imagen debajo del título principal
-if os.path.exists("sisisi.jpg"):
-    st.image("sisisi.jpg", use_container_width=True)
+ruta_img = buscar_imagen("sisisi")
+if ruta_img:
+    mostrar_imagen(ruta_img)
 else:
-    st.warning("No se encontró la imagen sisisi.jpg en la carpeta de la app.")
+    st.warning(f"No se encontró sisisi.jpg. Colócala en esta carpeta: {BASE_DIR}")
 
 st.subheader("Sube una imagen con texto, indica el idioma en el que está y el idioma al que quieres traducirlo")
 
 translator = Translator()
 
-try:
-    os.mkdir("temp")
-except FileExistsError:
-    pass
+os.makedirs("temp", exist_ok=True)
 
 
 def remove_files(n):
@@ -160,7 +111,7 @@ def text_to_speech(text, output_language, tld):
 bg_image = st.file_uploader("Cargar Imagen:", type=["png", "jpg", "jpeg"])
 
 if bg_image is not None:
-    st.image(bg_image, caption="Imagen cargada.", use_container_width=True)
+    mostrar_imagen(bg_image, caption="Imagen cargada.")
 
     # Guardar la imagen en el sistema de archivos
     with open(bg_image.name, "wb") as f:
